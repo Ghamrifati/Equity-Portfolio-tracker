@@ -1,0 +1,414 @@
+/* Styles CSS de l'application */
+/* Styles généraux */
+body {
+    background-color: #1E1E1E;
+    color: #FFFFFF;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header-container {
+    background-color: #333333;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.header-title {
+    color: #00CED1;
+    margin-left: 15px;
+    font-weight: bold;
+}
+
+/* Sélecteur de dates */
+.date-selector-container {
+    background-color: #333333;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.date-picker-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.date-picker {
+    background-color: #444444;
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.calendar-icon {
+    position: absolute;
+    right: 10px;
+    color: #00CED1;
+}
+
+/* Boutons de période */
+.period-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.period-btn {
+    background-color: #444444;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.period-btn:hover {
+    background-color: #00CED1;
+    color: #1E1E1E;
+}
+
+/* Cartes récapitulatives */
+.summary-cards-container {
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background-color: #333333;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+
+.card-title {
+    color: #00CED1;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-value {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.change-container {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.profit-details, .portfolio-details, .returns-details {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+/* Tableau du portefeuille */
+.portfolio-table-container {
+    background-color: #333333;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.table-header-row {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    padding: 10px;
+    border-bottom: 1px solid #444444;
+}
+
+.table-header {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00CED1;
+}
+
+/* Graphique de performance */
+.performance-chart-container {
+    background-color: #333333;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.stocks-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stocks-title {
+    color: #00CED1;
+    font-weight: bold;
+    margin: 0;
+}
+
+.stock-selector-container {
+    display: flex;
+    align-items: center;
+}
+
+.select-stock-title {
+    margin: 0 10px 0 0;
+    font-size: 16px;
+}
+
+.stock-dropdown {
+    width: 200px;
+    background-color: #444444;
+    border-radius: 5px;
+    color: white;
+}
+
+/* Navigation par onglets */
+.tabs-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    margin-right: 10px;
+    background-color: #444444;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    background-color: #666666;
+}
+
+.tab-button.active {
+    background-color: #00CED1;
+    color: #1E1E1E;
+}
+
+/* Conteneurs spécifiques aux vues */
+.portfolio-value-container, .portfolio-breakdown-container, 
+.missed-profit-container, .buy-high-sell-low-container {
+    background-color: #333333;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.summary-title, .details-title {
+    color: #00CED1;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-table td {
+    padding: 8px;
+    border-bottom: 1px solid #444444;
+}
+
+.summary-table td:first-child {
+    font-weight: bold;
+    color: #CCCCCC;
+}
+
+.summary-table td:last-child {
+    text-align: right;
+}
+
+/* Styles pour les tables Dash */
+.dash-table-container {
+    margin-bottom: 20px;
+}
+
+.dash-spreadsheet-container {
+    border-radius: 10px !important;
+    overflow: hidden;
+}
+
+.dash-spreadsheet-inner {
+    border: none !important;
+}
+
+.dash-cell-value {
+    font-size: 14px !important;
+    padding: 10px !important;
+}
+
+.dash-header {
+    background-color: #444444 !important;
+    color: #00CED1 !important;
+    font-weight: bold !important;
+    padding: 10px !important;
+}
+
+/* Styles pour les graphiques */
+.performance-graph {
+    height: 100%;
+    width: 100%;
+}
+
+.js-plotly-plot {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Indicateurs positifs et négatifs */
+.positive-value {
+    color: #00FF7F !important;
+    font-weight: bold;
+}
+
+.negative-value {
+    color: #FF4500 !important;
+    font-weight: bold;
+}
+
+/* Styles pour les interfaces des sections spécifiques */
+.missed-profit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.buy-high-sell-low-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.portfolio-breakdown-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metric-card {
+    background-color: #444444;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.metric-label {
+    color: #CCCCCC;
+    font-size: 14px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .period-buttons-container {
+        flex-wrap: wrap;
+    }
+    
+    .table-header-row {
+        grid-template-columns: 30% 20% 20% 30%;
+    }
+    
+    .tab-button {
+        margin-bottom: 10px;
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .portfolio-breakdown-metrics {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-card {
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .table-header-row {
+        grid-template-columns: 40% 20% 40%;
+    }
+    
+    .period-btn {
+        width: 45%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .card-value {
+        font-size: 22px;
+    }
+    
+    .summary-cards-container .row {
+        display: block;
+    }
+    
+    .summary-cards-container .col {
+        margin-bottom: 15px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fadeIn {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.slideIn {
+    animation: slideIn 0.5s ease-out;
+}
+
+/* Appliquer les animations aux éléments principaux */
+.summary-cards-container,
+.portfolio-table-container,
+.performance-chart-container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.tab-content {
+    animation: slideIn 0.5s ease-out;
+}

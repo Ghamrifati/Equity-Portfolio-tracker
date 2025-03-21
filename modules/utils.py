@@ -2,13 +2,13 @@
 Module d'utilitaires pour le formatage et les opérations communes
 """
 
-def format_currency(value, prefix="₹"):
+def format_currency(value, prefix="DH "):
     """
     Formate une valeur monétaire avec symbole et séparateurs
     
     Args:
         value (float): Valeur à formater
-        prefix (str, optional): Symbole monétaire à utiliser. Par défaut "₹".
+        prefix (str, optional): Symbole monétaire à utiliser. Par défaut "DH ".
     
     Returns:
         str: Chaîne formatée

@@ -17,7 +17,7 @@ def create_tab_navigation():
         dbc.Row([
             dbc.Col(
                 dbc.Button(
-                    "Portfolio Value",
+                    "Valeur du Portefeuille",
                     id="btn-portfolio-value",
                     color="secondary",
                     outline=True,
@@ -27,7 +27,7 @@ def create_tab_navigation():
             ),
             dbc.Col(
                 dbc.Button(
-                    "Portfolio Breakdown",
+                    "Répartition du Portefeuille",
                     id="btn-portfolio-breakdown",
                     color="secondary",
                     outline=True,
@@ -37,7 +37,7 @@ def create_tab_navigation():
             ),
             dbc.Col(
                 dbc.Button(
-                    "Missed Profit",
+                    "Profits Manqués",
                     id="btn-missed-profit",
                     color="secondary",
                     outline=True,
@@ -47,7 +47,7 @@ def create_tab_navigation():
             ),
             dbc.Col(
                 dbc.Button(
-                    "Buy High Sell Low",
+                    "Stratégie d'Achat/Vente",
                     id="btn-buy-high-sell-low",
                     color="secondary",
                     outline=True,
@@ -58,8 +58,8 @@ def create_tab_navigation():
             dbc.Col(width=4),  # Espacement
             dbc.Col(
                 dbc.Button(
-                    "Nifty",
-                    id="btn-nifty",
+                    "MASI",
+                    id="btn-masi",
                     color="secondary",
                     outline=True,
                     className="tab-button"
@@ -68,7 +68,7 @@ def create_tab_navigation():
             ),
             dbc.Col(
                 dbc.Button(
-                    "Stocks",
+                    "Actions",
                     id="btn-stocks",
                     color="secondary",
                     outline=True,

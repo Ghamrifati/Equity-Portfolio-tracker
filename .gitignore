@@ -1,0 +1,48 @@
+# Environnements virtuels
+.venv/
+venv/
+ENV/
+env/
+
+# Fichiers de cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Fichiers de distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Fichiers de logs
+*.log
+
+# Fichiers de base de données SQLite
+*.sqlite3
+*.db
+
+# Fichiers de configuration locaux
+.env
+.env.local
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers d'IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*~
+
+# Fichiers de données spécifiques au projet qui ne devraient pas être partagés
+# Décommentez si nécessaire
+# data/personal_data.csv

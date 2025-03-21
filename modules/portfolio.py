@@ -127,7 +127,7 @@ def calculate_monthly_change(transactions_data, historical_data, months=1):
     
     return value_change, percent_change
 
-def calculate_best_worst_performers(transactions_data, historical_data, period='1Y'):
+def calculate_best_worst_performers(transactions_data, historical_data, period):
     """
     Identifie les meilleures et pires performances dans le portefeuille
     
@@ -139,32 +139,39 @@ def calculate_best_worst_performers(transactions_data, historical_data, period='
     Returns:
         tuple: (meilleur_performer, pire_performer)
     """
-    # Date actuelle (dernière date disponible dans les données)
     # Standardiser les noms de colonnes pour les données historiques
-    from modules.data_loader import standardize_historical_data
+    from modules.data_loader import standardize_historical_data, standardize_transactions_data
     historical_data_renamed = standardize_historical_data(historical_data)
+    transactions_renamed = standardize_transactions_data(transactions_data)
+    
     current_date = historical_data_renamed['date'].max()
     
-    # Déterminer la date de début selon la période
-    if period == '1Y':
-        start_date = current_date - pd.DateOffset(years=1)
-    elif period == '6M':
-        start_date = current_date - pd.DateOffset(months=6)
-    elif period == 'MTD':
-        start_date = current_date.replace(day=1)
-    elif period == 'YTD':
-        start_date = current_date.replace(month=1, day=1)
-    elif period == 'Last 60 Days':
-        start_date = current_date - pd.DateOffset(days=60)
-    else:
-        start_date = current_date - pd.DateOffset(years=1)  # Par défaut 1 an
+    # Define start_date based on period
+    today = datetime.now().date()
     
-    # Filtrer les données historiques pour la période
-    period_data = historical_data[(historical_data['date'] >= start_date) & 
-                                 (historical_data['date'] <= current_date)]
+    if period == '1M':
+        start_date = today - timedelta(days=30)
+    elif period == '3M':
+        start_date = today - timedelta(days=90)
+    elif period == '6M':
+        start_date = today - timedelta(days=180)
+    elif period == '1Y':
+        start_date = today - timedelta(days=365)
+    else:
+        start_date = today - timedelta(days=365)  # Default to 1Y
+    
+    end_date = today
+    
+    # Convert date objects to pandas datetime for comparison
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    
+    # Filter historical data for the period
+    period_data = historical_data_renamed[(historical_data_renamed['date'] >= start_date) &
+                                         (historical_data_renamed['date'] <= end_date)]
     
     # Calculer le rendement pour chaque symbole
-    symbols = transactions_data['symbol'].unique()
+    symbols = transactions_renamed['symbol'].unique()
     performance = []
     
     for symbol in symbols:

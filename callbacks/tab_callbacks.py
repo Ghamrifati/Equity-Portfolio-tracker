@@ -17,7 +17,7 @@ def register_tab_callbacks(app):
         'btn-portfolio-breakdown',
         'btn-missed-profit',
         'btn-buy-high-sell-low',
-        'btn-nifty',
+        'btn-masi',
         'btn-stocks'
     ]
     

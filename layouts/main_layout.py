@@ -33,8 +33,8 @@ def create_layout(historical_data, transactions_data):
     # Calcul des meilleures et pires performances
     best_performer, worst_performer = calculate_best_worst_performers(transactions_data, historical_data, '1Y')
     
-    # Calcul de la performance de l'indice Nifty
-    nifty_performance = calculate_index_performance(historical_data, '^NSEI', '1Y')
+    # Calcul de la performance de l'indice MASI
+    masi_performance = calculate_index_performance(historical_data, '^MASI', '1Y')
     
     # Calcul des profits manqués
     missed_profits_data = get_missed_profits(historical_data, transactions_data)
@@ -60,10 +60,10 @@ def create_layout(historical_data, transactions_data):
             dbc.Button('YTD', id='btn-ytd', color='light', className='period-btn'),
         ], className='period-buttons-container'),
         
-        # Cartes récapitulatives (Nifty, Profit, Valeur, Rendements)
+        # Cartes récapitulatives (MASI, Profit, Valeur, Rendements)
         create_summary_cards(
-            nifty_value=22378,  # À remplacer par la valeur réelle
-            nifty_change=0.18,  # À remplacer par la valeur réelle
+            masi_value=22378,  # À remplacer par la valeur réelle
+            masi_change=0.18,  # À remplacer par la valeur réelle
             profit=portfolio_metrics['total_profit_loss'],
             profit_change=0.00,  # À calculer
             missed_profit=missed_profits_data['missed_profit'].sum() if not missed_profits_data.empty else 0,
@@ -73,7 +73,7 @@ def create_layout(historical_data, transactions_data):
             mom_change=441.75,  # À calculer
             mom_value=43.67e3,  # À calculer
             returns_percent=portfolio_metrics['total_profit_loss_percent'],
-            nifty_yoy=nifty_performance,
+            masi_yoy=masi_performance,
             best_performer=best_performer,
             worst_performer=worst_performer
         ),

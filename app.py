@@ -21,6 +21,11 @@ app.title = "Equity Portfolio Tracker"
 # Chargement des données
 historical_data, transactions_data = load_data()
 
+# À ajouter après avoir chargé historical_data
+print("Colonnes disponibles dans historical_data:", historical_data.columns.tolist())
+print("Premières lignes de historical_data:")
+print(historical_data.head())
+
 # Création du layout principal
 app.layout = create_layout(historical_data, transactions_data)
 

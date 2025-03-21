@@ -1,4 +1,4 @@
-# Cartes récapitulatives (Nifty, Profit, Valeur actuelle, Rendements)
+# Cartes récapitulatives (MASI, Profit, Valeur actuelle, Rendements)
 """
 Composant des cartes récapitulatives
 """
@@ -8,8 +8,8 @@ import dash_bootstrap_components as dbc
 from modules.utils import format_currency, format_percentage
 
 def create_summary_cards(
-    nifty_value,
-    nifty_change,
+    masi_value,
+    masi_change,
     profit,
     profit_change,
     missed_profit,
@@ -19,7 +19,7 @@ def create_summary_cards(
     mom_change,
     mom_value,
     returns_percent,
-    nifty_yoy,
+    masi_yoy,
     best_performer,
     worst_performer
 ):
@@ -27,8 +27,8 @@ def create_summary_cards(
     Crée les cartes récapitulatives pour l'application
     
     Args:
-        nifty_value (float): Valeur actuelle de l'indice Nifty
-        nifty_change (float): Changement en pourcentage de l'indice Nifty
+        masi_value (float): Valeur actuelle de l'indice MASI
+        masi_change (float): Changement en pourcentage de l'indice MASI
         profit (float): Profit total du portefeuille
         profit_change (float): Changement du profit sur la période
         missed_profit (float): Profit manqué (actions vendues)
@@ -38,7 +38,7 @@ def create_summary_cards(
         mom_change (float): Changement mois sur mois en pourcentage
         mom_value (float): Changement mois sur mois en valeur
         returns_percent (float): Rendement total en pourcentage
-        nifty_yoy (float): Rendement de l'indice Nifty sur un an
+        masi_yoy (float): Rendement de l'indice MASI sur un an
         best_performer (dict): Meilleure performance {'symbol': str, 'return': float}
         worst_performer (dict): Pire performance {'symbol': str, 'return': float}
     
@@ -64,14 +64,14 @@ def create_summary_cards(
     
     summary_cards = html.Div([
         dbc.Row([
-            # Carte Nifty
+            # Carte MASI
             dbc.Col(
                 dbc.Card([
-                    html.H4("Nifty", className="card-title"),
-                    html.H2(f"{nifty_value:,}", className="card-value"),
+                    html.H4("MASI", className="card-title"),
+                    html.H2(f"{masi_value:,}", className="card-value"),
                     html.Div([
-                        *format_change_with_arrow(nifty_change),
-                        html.Span(f"{nifty_change:.2f}", className="change-value")
+                        *format_change_with_arrow(masi_change),
+                        html.Span(f"{masi_change:.2f}", className="change-value")
                     ], className="change-container")
                 ], className="summary-card"),
                 width=12, md=6, lg=3
@@ -84,17 +84,17 @@ def create_summary_cards(
                     html.H2(format_currency(profit), className="card-value"),
                     html.Div([
                         html.Div([
-                            html.Span("Change (MoM): "),
+                            html.Span("Variation (MoM): "),
                             *format_change_with_arrow(profit_change),
                             html.Span(format_currency(24.86e3), className="mom-value")
                         ], className="profit-change"),
                         html.Div([
-                            html.Span("Missed Profit (Sold Assets): "),
+                            html.Span("Profits Manqués (Actions Vendues): "),
                             html.Span(format_currency(missed_profit), className="missed-profit", 
                                      style={"color": "#FF4500"})
                         ], className="missed-profit-container"),
                         html.Div([
-                            html.Span("Trades Done: "),
+                            html.Span("Transactions Effectuées: "),
                             html.Span(f"{trades_done}", className="trades-done")
                         ], className="trades-container")
                     ], className="profit-details")
@@ -105,15 +105,15 @@ def create_summary_cards(
             # Carte Valeur du Portefeuille
             dbc.Col(
                 dbc.Card([
-                    html.H4("Current Portfolio Value", className="card-title"),
+                    html.H4("Valeur du Portefeuille", className="card-title"),
                     html.H2(format_currency(portfolio_value), className="card-value"),
                     html.Div([
                         html.Div([
-                            html.Span("Invested Amount: "),
+                            html.Span("Montant Investi: "),
                             html.Span(format_currency(invested_amount), className="invested-amount")
                         ], className="invested-container"),
                         html.Div([
-                            html.Span("Change (MoM): "),
+                            html.Span("Variation (MoM): "),
                             *format_change_with_arrow(mom_change),
                             html.Span(format_currency(mom_value), className="mom-value")
                         ], className="portfolio-change")
@@ -125,23 +125,23 @@ def create_summary_cards(
             # Carte Rendements
             dbc.Col(
                 dbc.Card([
-                    html.H4("Returns", className="card-title"),
+                    html.H4("Rendements", className="card-title"),
                     html.H2(format_percentage(returns_percent), className="card-value",
                            style={"color": "#00FF7F" if returns_percent > 0 else "#FF4500"}),
                     html.Div([
                         html.Div([
-                            html.Span("Nifty (YoY): "),
-                            *format_change_with_arrow(nifty_yoy)
-                        ], className="nifty-returns"),
+                            html.Span("MASI (Annuel): "),
+                            *format_change_with_arrow(masi_yoy)
+                        ], className="masi-returns"),
                         html.Div([
-                            html.Span("Best Performer: "),
+                            html.Span("Meilleure Performance: "),
                             html.Span(best_performer['symbol'], className="best-performer-symbol"),
                             html.Span(format_percentage(best_performer['return']), 
                                      className="best-performer-return",
                                      style={"color": "#00FF7F"})
                         ], className="best-performer-container"),
                         html.Div([
-                            html.Span("Worst Performer: "),
+                            html.Span("Pire Performance: "),
                             html.Span(worst_performer['symbol'], className="worst-performer-symbol"),
                             html.Span(format_percentage(worst_performer['return']), 
                                      className="worst-performer-return",

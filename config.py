@@ -38,7 +38,7 @@ TIME_PERIODS = {
 
 # Configuration des indices de référence
 INDICES = {
-    "Nifty": "^NSEI",
+    "MASI": "^MASI",
 }
 
 # Configuration des styles communs

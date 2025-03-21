@@ -48,7 +48,22 @@ Les scripts effectuent les opérations suivantes:
 3. Configurent le dépôt distant (GitHub)
 4. Ajoutent tous les fichiers au suivi Git
 5. Créent un commit avec votre message
-6. Poussent les modifications vers GitHub
+6. Gèrent intelligemment l'envoi des modifications vers GitHub:
+   - Si le dépôt distant est vide, les modifications sont envoyées directement
+   - Si le dépôt distant contient déjà des commits, trois options sont proposées:
+     * Récupérer les modifications distantes et les fusionner (git pull)
+     * Forcer l'envoi des modifications locales (écrase les modifications distantes)
+     * Annuler l'opération
+
+### Gestion des conflits
+
+Si le dépôt distant contient des modifications qui ne sont pas présentes localement, les scripts vous offrent plusieurs options:
+
+1. **Option 1: Pull puis Push** - Cette option récupère d'abord les modifications distantes et les fusionne avec vos modifications locales avant de les pousser. C'est l'option la plus sûre si vous travaillez en équipe.
+
+2. **Option 2: Force Push** - Cette option écrase les modifications distantes avec vos modifications locales. Utilisez cette option avec précaution, car elle peut entraîner la perte de modifications distantes.
+
+3. **Option 3: Annuler** - Cette option annule l'opération sans envoyer vos modifications.
 
 ## Authentification GitHub
 

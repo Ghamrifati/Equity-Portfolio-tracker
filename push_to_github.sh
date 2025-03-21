@@ -56,9 +56,53 @@ fi
 echo -e "${YELLOW}Création d'un commit avec le message: '$COMMIT_MESSAGE'...${NC}"
 git commit -m "$COMMIT_MESSAGE"
 
-# Pousser les modifications vers GitHub
-echo -e "${YELLOW}Envoi des modifications vers GitHub...${NC}"
-git push -u origin $BRANCH
+# Vérifier si le dépôt distant existe et contient des commits
+if git ls-remote --heads origin $BRANCH &> /dev/null; then
+    echo -e "${YELLOW}Le dépôt distant contient déjà des commits.${NC}"
+    echo -e "${YELLOW}Options disponibles:${NC}"
+    echo -e "${GREEN}1. Récupérer les modifications distantes et fusionner (git pull)${NC}"
+    echo -e "${RED}2. Forcer l'envoi des modifications locales (écrase les modifications distantes)${NC}"
+    echo -e "${GREEN}3. Annuler l'opération${NC}"
+    
+    read -p "Entrez votre choix (1, 2 ou 3): " CHOICE
+    
+    case $CHOICE in
+        1)
+            echo -e "${YELLOW}Récupération et fusion des modifications distantes...${NC}"
+            git pull origin $BRANCH
+            if [ $? -ne 0 ]; then
+                echo -e "${RED}Erreur lors de la récupération des modifications. Résolvez les conflits avant de continuer.${NC}"
+                exit 1
+            fi
+            
+            echo -e "${YELLOW}Envoi des modifications vers GitHub...${NC}"
+            git push -u origin $BRANCH
+            ;;
+        2)
+            echo -e "${RED}ATTENTION: Vous allez écraser les modifications distantes!${NC}"
+            read -p "Êtes-vous sûr? (o/n): " CONFIRM
+            if [ "$CONFIRM" = "o" ] || [ "$CONFIRM" = "O" ]; then
+                echo -e "${YELLOW}Envoi forcé des modifications vers GitHub...${NC}"
+                git push -u origin $BRANCH --force
+            else
+                echo -e "${GREEN}Opération annulée.${NC}"
+                exit 0
+            fi
+            ;;
+        3)
+            echo -e "${GREEN}Opération annulée.${NC}"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Choix non valide. Opération annulée.${NC}"
+            exit 1
+            ;;
+    esac
+else
+    # Pousser les modifications vers GitHub (premier push)
+    echo -e "${YELLOW}Envoi des modifications vers GitHub...${NC}"
+    git push -u origin $BRANCH
+fi
 
 # Vérifier le résultat
 if [ $? -eq 0 ]; then

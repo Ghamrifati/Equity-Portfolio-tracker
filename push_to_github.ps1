@@ -50,9 +50,54 @@ if ([string]::IsNullOrWhiteSpace($commitMessage)) {
 Write-Host "Création d'un commit avec le message: '$commitMessage'..." -ForegroundColor Yellow
 git commit -m $commitMessage
 
-# Pousser les modifications vers GitHub
-Write-Host "Envoi des modifications vers GitHub..." -ForegroundColor Yellow
-git push -u origin $branch
+# Vérifier si le dépôt distant existe et contient des commits
+$remoteExists = git ls-remote --heads origin $branch 2>$null
+if ($remoteExists) {
+    Write-Host "Le dépôt distant contient déjà des commits." -ForegroundColor Yellow
+    Write-Host "Options disponibles:" -ForegroundColor Yellow
+    Write-Host "1. Récupérer les modifications distantes et fusionner (git pull)" -ForegroundColor Cyan
+    Write-Host "2. Forcer l'envoi des modifications locales (écrase les modifications distantes)" -ForegroundColor Red
+    Write-Host "3. Annuler l'opération" -ForegroundColor Green
+    
+    $choice = Read-Host "Entrez votre choix (1, 2 ou 3)"
+    
+    switch ($choice) {
+        "1" {
+            Write-Host "Récupération et fusion des modifications distantes..." -ForegroundColor Yellow
+            git pull origin $branch
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "Erreur lors de la récupération des modifications. Résolvez les conflits avant de continuer." -ForegroundColor Red
+                exit 1
+            }
+            
+            Write-Host "Envoi des modifications vers GitHub..." -ForegroundColor Yellow
+            git push -u origin $branch
+        }
+        "2" {
+            Write-Host "ATTENTION: Vous allez écraser les modifications distantes!" -ForegroundColor Red
+            $confirm = Read-Host "Êtes-vous sûr? (o/n)"
+            if ($confirm -eq "o" -or $confirm -eq "O") {
+                Write-Host "Envoi forcé des modifications vers GitHub..." -ForegroundColor Yellow
+                git push -u origin $branch --force
+            } else {
+                Write-Host "Opération annulée." -ForegroundColor Green
+                exit 0
+            }
+        }
+        "3" {
+            Write-Host "Opération annulée." -ForegroundColor Green
+            exit 0
+        }
+        default {
+            Write-Host "Choix non valide. Opération annulée." -ForegroundColor Red
+            exit 1
+        }
+    }
+} else {
+    # Pousser les modifications vers GitHub (premier push)
+    Write-Host "Envoi des modifications vers GitHub..." -ForegroundColor Yellow
+    git push -u origin $branch
+}
 
 # Vérifier le résultat
 if ($LASTEXITCODE -eq 0) {

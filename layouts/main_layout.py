@@ -21,12 +21,47 @@ def create_layout(historical_data, transactions_data):
     Crée le layout principal de l'application
     
     Args:
-        historical_data (pd.DataFrame): Données historiques des prix
+        historical_data (pd.DataFrame): Données historiques des actions
         transactions_data (pd.DataFrame): Données des transactions
-    
+        
     Returns:
         dash.html.Div: Layout principal
     """
+    return html.Div([
+        # Navbar
+        dbc.Navbar(
+            dbc.Container([
+                html.A(
+                    dbc.Row([
+                        dbc.Col(html.Img(src="/assets/logo.png", height="30px"), width="auto"),
+                        dbc.Col(dbc.NavbarBrand("Equity Portfolio Tracker", className="ms-2")),
+                    ], align="center", className="g-0"),
+                    href="/",
+                    style={"textDecoration": "none"},
+                ),
+            ]),
+            color="dark",
+            dark=True,
+            className="mb-4",
+        ),
+        
+        # Contenu principal
+        dbc.Container([
+            # Titre
+            html.H1("Tableau de bord du portefeuille", className="text-center mb-4"),
+            
+            # Onglets
+            dbc.Tabs([
+                dbc.Tab(label="Vue d'ensemble", tab_id="overview"),
+                dbc.Tab(label="Transactions", tab_id="transactions"),
+                dbc.Tab(label="Analyse", tab_id="analysis"),
+            ], id="tabs", active_tab="overview"),
+            
+            # Contenu des onglets
+            html.Div(id="tab-content", className="p-4"),
+            
+        ], fluid=True)
+    ])
     # Calcul des métriques du portefeuille
     portfolio_metrics = calculate_portfolio_metrics(transactions_data, historical_data)
     

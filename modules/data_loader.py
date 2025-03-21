@@ -1,6 +1,8 @@
 """Chargement et préparation des données"""
 import pandas as pd
 import os
+import yfinance as yf
+from datetime import datetime, timedelta
 
 def standardize_historical_data(historical_data):
     """
@@ -141,105 +143,93 @@ def standardize_transactions_data(transactions_data):
     return df
 
 def load_data():
-    """Charge les données historiques et les transactions"""
-    try:
-        # Essayer d'abord le chemin avec le dossier data/
-        historical_data = pd.read_csv('data/all_historical_data.csv', sep=';', on_bad_lines='skip')
-    except FileNotFoundError:
-        # Sinon, essayer le chemin à la racine
-        try:
-            historical_data = pd.read_csv('all_historical_data.csv', sep=';', on_bad_lines='skip')
-        except FileNotFoundError:
-            # Créer un DataFrame vide avec la structure correcte
-            historical_data = pd.DataFrame(columns=['Date', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Volume'])
-    except Exception as e:
-        print(f"Erreur lors du chargement des données historiques: {e}")
-        # Essayer avec des options plus robustes
-        try:
-            historical_data = pd.read_csv('data/historical_data.csv', sep=';', on_bad_lines='skip')
-        except:
-            # Créer un DataFrame vide avec la structure correcte
-            historical_data = pd.DataFrame(columns=['Date', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Volume'])
+    """
+    Charge les données historiques et les transactions de la Bourse de Casablanca
     
-    # Afficher les informations sur les colonnes pour le débogage
-    print(f"Colonnes disponibles dans historical_data: {historical_data.columns.tolist()}")
-    print("Premières lignes de historical_data:")
-    print(historical_data.head())
+    Returns:
+        tuple: (historical_data, transactions_data)
+    """
+    # Chemins des fichiers de données
+    data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
     
-    # Vérifier et convertir les dates
-    if 'Date' in historical_data.columns:
-        historical_data['Date'] = pd.to_datetime(historical_data['Date'], errors='coerce')
-    elif 'date' in historical_data.columns:
-        historical_data['Date'] = historical_data['date']
-        historical_data['Date'] = pd.to_datetime(historical_data['Date'], errors='coerce')
-    else:
-        print("Attention: Colonne 'Date' non trouvée dans les données historiques")
-        # Créer une colonne Date vide si elle n'existe pas
-        historical_data['Date'] = pd.NaT
-        
-    # Convertir les dates au format DD/MM/YYYY
-    for col in ['date', 'Date']:
-        if col in historical_data.columns:
-            try:
-                # Essayer de convertir les dates au format DD/MM/YYYY
-                historical_data[col] = pd.to_datetime(historical_data[col], format='%d/%m/%Y', errors='coerce')
-            except:
-                # Si ça échoue, essayer le format par défaut
-                historical_data[col] = pd.to_datetime(historical_data[col], errors='coerce')
-        
-    # Extraire les colonnes à partir de la première colonne si elle contient des séparateurs
-    if len(historical_data.columns) > 0 and ';' in str(historical_data.columns[0]):
-        # La première colonne contient probablement toutes les données
-        first_col = historical_data.columns[0]
-        if isinstance(first_col, str) and ';' in first_col:
-            # Extraire les noms de colonnes
-            col_names = first_col.split(';')
+    # Vérifier que le dossier data existe
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+        print(f"Dossier data créé: {data_dir}")
+        return pd.DataFrame(), pd.DataFrame()
+    
+    # Lister tous les fichiers CSV dans le dossier data
+    csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
+    
+    if not csv_files:
+        print("Aucun fichier CSV trouvé dans le dossier data.")
+        return pd.DataFrame(), pd.DataFrame()
+    
+    print(f"Fichiers CSV trouvés: {csv_files}")
+    
+    # Charger les données historiques
+    historical_file = os.path.join(data_dir, 'historical_data.csv')
+    if os.path.exists(historical_file):
+        try:
+            print(f"Chargement des données historiques depuis historical_data.csv")
+            # Utiliser sep=';' pour les fichiers CSV avec séparateur point-virgule
+            historical_data = pd.read_csv(historical_file, sep=';')
             
-            # Vérifier si la première ligne contient des données
-            if len(historical_data) > 0:
-                # Extraire les données de la première colonne
-                data_rows = []
-                for _, row in historical_data.iterrows():
-                    first_cell = str(row[first_col])
-                    if ';' in first_cell:
-                        values = first_cell.split(';')
-                        data_rows.append(values)
-                
-                # Créer un nouveau DataFrame avec les colonnes extraites
-                if data_rows:
-                    new_df = pd.DataFrame(data_rows, columns=col_names)
-                    
-                    # Remplacer historical_data par le nouveau DataFrame
-                    historical_data = new_df
-                    
-                    # Afficher les nouvelles colonnes
-                    print(f"Nouvelles colonnes extraites: {historical_data.columns.tolist()}")
-                    print("Premières lignes après extraction:")
-                    print(historical_data.head())
-    
-    try:
-        # Essayer d'abord le chemin avec le dossier data/
-        transactions_data = pd.read_csv('data/transactions.csv')
-    except FileNotFoundError:
-        # Sinon, essayer le chemin à la racine
-        try:
-            transactions_data = pd.read_csv('transactions.csv')
-        except FileNotFoundError:
-            # Créer un DataFrame vide avec la structure correcte
-            transactions_data = pd.DataFrame(columns=['Ticker', 'Nombre_Actions', 'Prix_Acquisition', 'Date_Acquisition'])
-    
-    # Vérifier et convertir les dates
-    if 'Date_Acquisition' in transactions_data.columns:
-        transactions_data['Date_Acquisition'] = pd.to_datetime(transactions_data['Date_Acquisition'])
-    elif 'purchase_date' in transactions_data.columns:
-        transactions_data['Date_Acquisition'] = transactions_data['purchase_date']
-        transactions_data['Date_Acquisition'] = pd.to_datetime(transactions_data['Date_Acquisition'])
+            # Convertir la colonne Date en datetime
+            if 'Date' in historical_data.columns:
+                historical_data['Date'] = pd.to_datetime(historical_data['Date'], format='%d/%m/%Y', errors='coerce')
+            
+            print(f"Données historiques chargées: {len(historical_data)} lignes, {historical_data['Symbol'].nunique()} symboles")
+        except Exception as e:
+            print(f"Erreur lors du chargement de historical_data.csv: {e}")
+            historical_data = pd.DataFrame()
     else:
-        print("Attention: Colonne 'Date_Acquisition' non trouvée dans les données de transactions")
-        # Créer une colonne Date_Acquisition vide si elle n'existe pas
-        transactions_data['Date_Acquisition'] = pd.NaT
+        print("Fichier historical_data.csv non trouvé")
+        historical_data = pd.DataFrame()
+    
+    # Charger les données de transactions
+    transactions_file = os.path.join(data_dir, 'transactions.csv')
+    if os.path.exists(transactions_file):
+        try:
+            print(f"Chargement des transactions depuis transactions.csv")
+            # Utiliser sep=';' pour les fichiers CSV avec séparateur point-virgule
+            transactions_data = pd.read_csv(transactions_file, sep=';')
+            
+            # Convertir la colonne Date en datetime
+            if 'Date' in transactions_data.columns:
+                transactions_data['Date'] = pd.to_datetime(transactions_data['Date'], format='%d/%m/%Y', errors='coerce')
+            
+            print(f"Transactions chargées: {len(transactions_data)} lignes")
+        except Exception as e:
+            print(f"Erreur lors du chargement de transactions.csv: {e}")
+            transactions_data = pd.DataFrame()
+    else:
+        print("Fichier transactions.csv non trouvé")
+        transactions_data = pd.DataFrame()
     
     return historical_data, transactions_data
+
+def standardize_transaction_type(type_str):
+    """
+    Standardise les types de transactions en BUY ou SELL
+    
+    Args:
+        type_str: Type de transaction original
+        
+    Returns:
+        str: 'BUY' ou 'SELL'
+    """
+    if not isinstance(type_str, str):
+        return 'BUY'  # Valeur par défaut
+    
+    type_lower = type_str.lower()
+    
+    if 'buy' in type_lower or 'achat' in type_lower or 'acheter' in type_lower:
+        return 'BUY'
+    elif 'sell' in type_lower or 'vente' in type_lower or 'vendre' in type_lower:
+        return 'SELL'
+    else:
+        return 'BUY'  # Valeur par défaut
 
 def get_current_prices(historical_data, as_of_date):
     """
@@ -253,21 +243,64 @@ def get_current_prices(historical_data, as_of_date):
     Returns:
         pd.DataFrame: DataFrame contenant les colonnes [symbol, close]
     """
-    # Standardiser les noms de colonnes pour les données historiques
-    historical_data_renamed = standardize_historical_data(historical_data)
+    try:
+        # Standardiser les noms de colonnes pour les données historiques
+        historical_data_renamed = standardize_historical_data(historical_data)
+        
+        # Réinitialiser l'index pour éviter les problèmes d'index dupliqués
+        historical_data_renamed = historical_data_renamed.reset_index(drop=True)
+        
+        # Supprimer les doublons éventuels
+        if 'symbol' in historical_data_renamed.columns and 'date' in historical_data_renamed.columns:
+            historical_data_renamed = historical_data_renamed.drop_duplicates(subset=['symbol', 'date'])
+        
+        # Vérifier si la colonne 'date' est de type datetime
+        if 'date' in historical_data_renamed.columns and not pd.api.types.is_datetime64_any_dtype(historical_data_renamed['date']):
+            historical_data_renamed['date'] = pd.to_datetime(historical_data_renamed['date'], errors='coerce')
+        
+        # Vérifier si as_of_date est de type datetime
+        if not isinstance(as_of_date, pd.Timestamp) and not isinstance(as_of_date, pd.DatetimeIndex):
+            as_of_date = pd.to_datetime(as_of_date, errors='coerce')
+        
+        # Créer une méthode alternative pour filtrer les données
+        filtered_data = historical_data_renamed.copy()
+        filtered_data = filtered_data[filtered_data['date'].notna()]
+        filtered_data = filtered_data[filtered_data['date'] <= as_of_date]
+        
+        # Si filtered_data est vide, retourner un DataFrame vide
+        if filtered_data.empty:
+            print("Aucune donnée trouvée pour la date spécifiée")
+            return pd.DataFrame(columns=['symbol', 'close'])
+        
+        # Obtenir le prix le plus récent pour chaque action
+        # Utiliser une méthode plus robuste pour le groupby
+        latest_prices = filtered_data.sort_values('date')
+        
+        # Créer un DataFrame pour stocker les résultats
+        result = []
+        for symbol in filtered_data['symbol'].unique():
+            symbol_data = filtered_data[filtered_data['symbol'] == symbol]
+            if not symbol_data.empty:
+                latest_row = symbol_data.iloc[-1]
+                result.append({
+                    'symbol': symbol,
+                    'close': latest_row['close']
+                })
+        
+        # Convertir la liste en DataFrame
+        latest_prices = pd.DataFrame(result)
+        
+        # Si latest_prices est vide, retourner un DataFrame vide
+        if latest_prices.empty:
+            print("Aucun prix récent trouvé")
+            return pd.DataFrame(columns=['symbol', 'close'])
+        
+        return latest_prices
     
-    # Filtrer les données jusqu'à la date spécifiée
-    filtered_data = historical_data_renamed[historical_data_renamed['date'] <= as_of_date]
-    
-    # Si filtered_data est vide, retourner un DataFrame vide
-    if filtered_data.empty:
+    except Exception as e:
+        print(f"Erreur dans get_current_prices: {e}")
+        # En cas d'erreur, retourner un DataFrame vide
         return pd.DataFrame(columns=['symbol', 'close'])
-    
-    # Obtenir le prix le plus récent pour chaque action
-    latest_prices = filtered_data.sort_values('date').groupby('symbol').last().reset_index()
-    
-    # Sélectionner uniquement les colonnes nécessaires
-    return latest_prices[['symbol', 'close']]
 
 
 def calculate_portfolio_value(historical_data, transactions_data, as_of_date=None):
